@@ -299,12 +299,12 @@ public class Configuration {
 			int line_no = 1, update = 0;
 
 			while ((line = br.readLine()) != null) {
-				update = updateConfig(line);
-				line_no++;
+				update = updateConfig(line);				
 				if (update == -1){
 					System.out.println("Error in .conf file line " + line_no);
 					return -1;
 				}
+				line_no++;
 			}
 
 			return 1;
