@@ -1,3 +1,10 @@
+/*
+	To compile:
+		javac -cp ".;mysql-connector-java.jar;" *.java
+	To run:
+		java -cp .:mysql-connector-java.jar UNQS simulation.conf
+*/
+
 import java.io.Console;
 import java.sql.*;
 import java.util.Scanner;
@@ -70,6 +77,10 @@ public class UNQS {
 			Connection con = DriverManager.getConnection("jdbc:mysql://"+ config.getIpAddress() + ":" + config.getPortNumber() + "/" + config.getDbName(), config.getUsername(), config.getPassword());
 
 			System.out.print("successfully connected.\n");
+
+			
+			int priority = Packet.getPriority(280);
+			System.out.println("Trial priority of port 80 = " +priority + "\n");
 		} catch (Exception e) {
 			System.out.print("error connecting.\n");
 			System.out.println(e);
