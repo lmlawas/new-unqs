@@ -79,8 +79,8 @@ public class UNQS {
 			System.out.print("successfully connected.\n");
 
 			
-			int priority = Packet.getPriority(280);
-			System.out.println("Trial priority of port 80 = " +priority + "\n");
+			int priority = Packet.getPriority(3335);
+			System.out.println("Trial priority of port 3335 = " +priority + "\n");
 		} catch (Exception e) {
 			System.out.print("error connecting.\n");
 			System.out.println(e);

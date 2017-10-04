@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.regex.Pattern;
 
 public class Packet {
 
@@ -29,11 +30,12 @@ public class Packet {
 				String line = null;
 
 				while ((line = br.readLine()) != null) {
-					System.out.println(line);
-					String[] tokens = line.split(",");
-					int port = Integer.parseInt(tokens[1]);
-					if (protocol == port) {
-						return i;
+					if (matchCommas(line)) {
+						String[] tokens = line.split(",");
+						int port = Integer.parseInt(tokens[1]);
+						if (protocol == port) {
+							return i;
+						}
 					}
 				}
 				br.close();
@@ -44,6 +46,13 @@ public class Packet {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+
+	public static boolean matchCommas(String line) {
+		boolean match = false;
+
+		match = Pattern.matches("(.*),([0-9]+)(,.*)*", line);
+		return match;
 	}
 
 }
