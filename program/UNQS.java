@@ -59,6 +59,7 @@ public class UNQS {
 			}
 		}
 
+		/* get password if any */
 		if ( config.hasPassword() ) {
 			if ( sensitive == null ) return;
 			System.out.print("MySQL password: ");
@@ -78,9 +79,12 @@ public class UNQS {
 
 			System.out.print("successfully connected.\n");
 
-			
-			int priority = Packet.getPriority(3335);
-			System.out.println("Trial priority of port 3335 = " +priority + "\n");
+			Statement stmt = con.createStatement();
+			ResultSet total_flows = stmt.executeQuery("select count(*) from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "`;");
+			total_flows.next();
+			System.out.println("Total flows = " + total_flows.getInt(1));
+			// int priority = Packet.getPriority(3335);
+			// System.out.println("Trial priority of port 3335 = " +priority + "\n");
 		} catch (Exception e) {
 			System.out.print("error connecting.\n");
 			System.out.println(e);
