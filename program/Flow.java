@@ -12,7 +12,7 @@ public class Flow {
 	public Flow() {
 	}
 
-	public Flow(int size, int no_of_packets, int protocol, int start_time){
+	public Flow(int size, int no_of_packets, int protocol, int start_time) {
 		this.size = size;
 		this.no_of_packets = no_of_packets;
 		this.protocol = protocol;
@@ -22,16 +22,13 @@ public class Flow {
 	/* Methods */
 	public LinkedList<Packet> convertToPackets() {
 		LinkedList<Packet> packets = new LinkedList<Packet>();
-		int i, quotient = size / no_of_packets;
-		Packet p = new Packet(quotient, protocol, start_time);
+		int i, quotient = size / no_of_packets, remainder = size % no_of_packets;
 
 		for (i = 0; i < no_of_packets; i++) {
-			if (i != no_of_packets - 1) {
-				packets.add(p);
-				size = size - quotient;
+			if (size % no_of_packets > 0 && i == no_of_packets - 1) {
+				packets.add(new Packet(quotient + remainder, protocol, start_time));
 			} else {
-				p.size = size;
-				packets.add(p);
+				packets.add(new Packet(quotient, protocol, start_time));
 			}
 		}
 

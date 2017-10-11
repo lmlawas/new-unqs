@@ -7,6 +7,7 @@
 
 import java.io.Console;
 import java.sql.*;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class UNQS {
@@ -81,10 +82,32 @@ public class UNQS {
 
 			Statement stmt = con.createStatement();
 			ResultSet flows = stmt.executeQuery("select BYTES, PACKETS, L4_DST_PORT, FIRST_SWITCHED from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "` ORDER BY FIRST_SWITCHED ASC;");
-			System.out.println("SIZE\tPKT_CNT\tPROTOCOL\tTIME");
-			while( flows.next() ){
-				System.out.println(flows.getInt(1) +"\t" + flows.getInt(2) + "\t" + flows.getInt(3) + "\t" + flows.getInt(4));
-			}			
+			Flow single_flow = new Flow();
+			LinkedList<Packet> new_packets = new LinkedList<Packet>();
+			while( flows.next() ){				
+				single_flow.size = flows.getInt(1);
+				single_flow.no_of_packets = flows.getInt(2);
+				single_flow.protocol = flows.getInt(3);
+				single_flow.start_time = flows.getInt(4);
+
+				new_packets = single_flow.convertToPackets();
+				int total = 0;
+				for(Packet p: new_packets){
+					System.out.println(p.size + "\t" + p.priority + "\t" + p.start_time);
+					total += p.size;
+				}
+
+				System.out.print("Correct individual packet sizes?\t");
+				if(total == single_flow.size){
+					System.out.println("yes");
+				}
+				else{
+					System.out.println("no");
+					break;
+				}
+
+				System.out.println("____________________________________________________________\n");
+			}	
 			// int priority = Packet.getPriority(3335);
 			// System.out.println("Trial priority of port 3335 = " +priority + "\n");
 		} catch (Exception e) {
