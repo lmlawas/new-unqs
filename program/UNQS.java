@@ -80,9 +80,11 @@ public class UNQS {
 			System.out.print("successfully connected.\n");
 
 			Statement stmt = con.createStatement();
-			ResultSet total_flows = stmt.executeQuery("select count(*) from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "`;");
-			total_flows.next();
-			System.out.println("Total flows = " + total_flows.getInt(1));
+			ResultSet flows = stmt.executeQuery("select BYTES, PACKETS, L4_DST_PORT, FIRST_SWITCHED from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "` ORDER BY FIRST_SWITCHED ASC;");
+			System.out.println("SIZE\tPKT_CNT\tPROTOCOL\tTIME");
+			while( flows.next() ){
+				System.out.println(flows.getInt(1) +"\t" + flows.getInt(2) + "\t" + flows.getInt(3) + "\t" + flows.getInt(4));
+			}			
 			// int priority = Packet.getPriority(3335);
 			// System.out.println("Trial priority of port 3335 = " +priority + "\n");
 		} catch (Exception e) {
