@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 public class Packet {
 
 	/* Attributes */
-	public double size;
+	public int size;
 	public int priority;
 	public int start_time;
 
@@ -13,7 +13,7 @@ public class Packet {
 	public Packet() {
 	}
 
-	public Packet(double size, int protocol, int start_time) {
+	public Packet(int size, int protocol, int start_time) {
 		this.size = size;
 		this.priority = getPriority(protocol);
 		this.start_time = start_time;
