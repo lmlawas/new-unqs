@@ -76,40 +76,47 @@ public class UNQS {
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://"+ config.getIpAddress() + ":" + config.getPortNumber() + "/" + config.getDbName(), config.getUsername(), config.getPassword());
+			Connection con = DriverManager.getConnection("jdbc:mysql://" + config.getIpAddress() + ":" + config.getPortNumber() + "/" + config.getDbName(), config.getUsername(), config.getPassword());
 
 			System.out.print("successfully connected.\n");
 
 			Statement stmt = con.createStatement();
-			ResultSet flows = stmt.executeQuery("select BYTES, PACKETS, L4_DST_PORT, FIRST_SWITCHED from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "` ORDER BY FIRST_SWITCHED ASC;");
+			ResultSet times = stmt.executeQuery("select MIN(FIRST_SWITCHED), MAX(FIRST_SWITCHED) from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "`;");
+			ResultSet flows;
 			Flow single_flow = new Flow();
 			LinkedList<Packet> new_packets = new LinkedList<Packet>();
-			while( flows.next() ){				
-				single_flow.size = flows.getInt(1);
-				single_flow.no_of_packets = flows.getInt(2);
-				single_flow.protocol = flows.getInt(3);
-				single_flow.start_time = flows.getInt(4);
+			LinkedList<Queue> priority_queues = new LinkedList<Queue>();
 
-				new_packets = single_flow.convertToPackets();
-				int total = 0;
-				for(Packet p: new_packets){
-					System.out.println(p.size + "\t" + p.priority + "\t" + p.start_time);
-					total += p.size;
-				}
-
-				System.out.print("Correct individual packet sizes?\t");
-				if(total == single_flow.size){
-					System.out.println("yes");
-				}
-				else{
-					System.out.println("no");
+			for(int i=0; i<3; i++){
+				priority_queues.add(new Queue());
+				if(config.getSchedule()==Schedule.FIFO){
 					break;
 				}
+			}
 
-				System.out.println("____________________________________________________________\n");
-			}	
-			// int priority = Packet.getPriority(3335);
-			// System.out.println("Trial priority of port 3335 = " +priority + "\n");
+			int t = times.getInt(1); //first switch time
+
+			// while there are flows between the earliest and latest switch times
+			while (t < times.getInt(2)) {
+				flows = stmt.executeQuery("select BYTES, PACKETS, L4_DST_PORT, FIRST_SWITCHED from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "` ORDER BY FIRST_SWITCHED ASC;");
+								
+				while ( flows.next() ) {
+					single_flow.size = flows.getInt(1);
+					single_flow.no_of_packets = flows.getInt(2);
+					single_flow.protocol = flows.getInt(3);
+					single_flow.start_time = flows.getInt(4);
+
+					new_packets = single_flow.convertToPackets();
+
+					// add new_packets to appropriate queue
+					
+				}
+
+				// process queue
+
+				t++;
+			}
+
 		} catch (Exception e) {
 			System.out.print("error connecting.\n");
 			System.out.println(e);

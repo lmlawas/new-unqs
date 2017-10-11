@@ -23,8 +23,8 @@ public class Schedule {
 		return 1;
 	}
 
-	public void firstInFirstOut() {
-
+	public void firstInFirstOut( /* Queue */ ) {
+		// test
 	}
 
 	public void priorityQueue() {
