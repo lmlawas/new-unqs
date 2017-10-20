@@ -20,15 +20,15 @@ public class Flow {
 	}
 
 	/* Methods */
-	public LinkedList<Packet> convertToPackets() {
+	public LinkedList<Packet> convertToPackets(int schedule_type) {
 		LinkedList<Packet> packets = new LinkedList<Packet>();
 		int i, quotient = size / no_of_packets, remainder = size % no_of_packets;
 
 		for (i = 0; i < no_of_packets; i++) {
 			if (size % no_of_packets > 0 && i == no_of_packets - 1) {
-				packets.add(new Packet(quotient + remainder, protocol, start_time));
+				packets.add(new Packet(quotient + remainder, protocol, start_time, schedule_type));
 			} else {
-				packets.add(new Packet(quotient, protocol, start_time));
+				packets.add(new Packet(quotient, protocol, start_time, schedule_type));
 			}
 		}
 
