@@ -86,7 +86,9 @@ public class UNQS {
 			Flow single_flow = new Flow();
 			LinkedList<Packet> new_packets = new LinkedList<Packet>();
 			LinkedList<Queue> priority_queues = new LinkedList<Queue>();
+			int priority;
 
+			// create priority queues
 			for(int i=0; i<3; i++){
 				priority_queues.add(new Queue());
 				if(config.getSchedule()==Schedule.FIFO){
@@ -99,20 +101,27 @@ public class UNQS {
 			// while there are flows between the earliest and latest switch times
 			while (t < times.getInt(2)) {
 				flows = stmt.executeQuery("select BYTES, PACKETS, L4_DST_PORT, FIRST_SWITCHED from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "` ORDER BY FIRST_SWITCHED ASC;");
-								
+
+				// while there are flows at time t								
 				while ( flows.next() ) {
 					single_flow.size = flows.getInt(1);
 					single_flow.no_of_packets = flows.getInt(2);
 					single_flow.protocol = flows.getInt(3);
 					single_flow.start_time = flows.getInt(4);
 
-					new_packets = single_flow.convertToPackets();
+					new_packets = single_flow.convertToPackets(config.getSchedule());
+					priority = Packet.getPriority(single_flow.protocol, config.getSchedule());
 
 					// add new_packets to appropriate queue
-					
+					priority_queues.get(priority-1).addAll(new_packets);
+
+					// empty list before the next iteration
+					new_packets.clear();
+
 				}
 
 				// process queue
+				Schedule.process(priority_queues, config.getSchedule());
 
 				t++;
 			}
