@@ -80,8 +80,9 @@ public class UNQS {
 
 			System.out.print("successfully connected.\n");
 
-			Statement stmt = con.createStatement();
-			ResultSet times = stmt.executeQuery("select MIN(FIRST_SWITCHED), MAX(FIRST_SWITCHED) from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "`;");
+			Statement stmt_times = con.createStatement();
+			Statement stmt_flows = con.createStatement();
+			ResultSet times = stmt_times.executeQuery("select MIN(FIRST_SWITCHED), MAX(FIRST_SWITCHED) from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "`;");
 			ResultSet flows;
 			Flow single_flow = new Flow();
 			LinkedList<Packet> new_packets = new LinkedList<Packet>();
@@ -89,20 +90,22 @@ public class UNQS {
 			int priority;
 
 			// create priority queues
-			for(int i=0; i<3; i++){
+			for (int i = 0; i < 3; i++) {
 				priority_queues.add(new Queue());
-				if(config.getSchedule()==Schedule.FIFO){
+				if (config.getSchedule() == Schedule.FIFO) {
 					break;
 				}
 			}
+
+			times.next();
 
 			int t = times.getInt(1); //first switch time
 
 			// while there are flows between the earliest and latest switch times
 			while (t < times.getInt(2)) {
-				flows = stmt.executeQuery("select BYTES, PACKETS, L4_DST_PORT, FIRST_SWITCHED from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "` ORDER BY FIRST_SWITCHED ASC;");
+				flows = stmt_flows.executeQuery("select BYTES, PACKETS, L4_DST_PORT, FIRST_SWITCHED from `flows-" + config.getDatestamp() + "v4_" + config.getInterfaceName() + "` ORDER BY FIRST_SWITCHED ASC;");
 
-				// while there are flows at time t								
+				// while there are flows at time t
 				while ( flows.next() ) {
 					single_flow.size = flows.getInt(1);
 					single_flow.no_of_packets = flows.getInt(2);
@@ -113,7 +116,7 @@ public class UNQS {
 					priority = Packet.getPriority(single_flow.protocol, config.getSchedule());
 
 					// add new_packets to appropriate queue
-					priority_queues.get(priority-1).addAll(new_packets);
+					priority_queues.get(priority - 1).addAll(new_packets);
 
 					// empty list before the next iteration
 					new_packets.clear();
@@ -124,6 +127,12 @@ public class UNQS {
 				Schedule.process(priority_queues, config.getSchedule());
 
 				t++;
+			}
+
+			for (Queue q : priority_queues) {
+				for (Packet p : q) {
+					p.info();
+				}
 			}
 
 		} catch (Exception e) {

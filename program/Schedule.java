@@ -9,17 +9,17 @@ public class Schedule {
 	final public static int WFQ = 2;
 
 
-	public static int process(LinkedList<Queue> priority_queues, int schedule_type) {
+	public static int process(LinkedList<Queue> priority_queues, int schedule_type) {		
 
-		if (schedule_type == FIFO) {
-			firstInFirstOut();
-		} else if (schedule_type == PQ) {
-			priorityQueue();
-		} else if (schedule_type == WFQ) {
-			weightedFairQueue();
-		} else {
-			return -1;
-		}
+		// if (schedule_type == FIFO) {
+		// 	firstInFirstOut();
+		// } else if (schedule_type == PQ) {
+		// 	priorityQueue();
+		// } else if (schedule_type == WFQ) {
+		// 	weightedFairQueue();
+		// } else {
+		// 	return -1;
+		// }
 		return 1;
 	}
 
