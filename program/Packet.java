@@ -58,4 +58,10 @@ public class Packet {
 		return match;
 	}
 
+	public void info(){
+		System.out.println("packet size:" + this.size);
+		System.out.println("packet priority:" + this.priority);
+		System.out.println("packet start_time:" + this.start_time + "\n");
+	}
+
 }
