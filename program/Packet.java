@@ -13,14 +13,17 @@ public class Packet {
 	public Packet() {
 	}
 
-	public Packet(int size, int protocol, int start_time) {
+	public Packet(int size, int protocol, int start_time, int schedule_type) {
 		this.size = size;
-		this.priority = getPriority(protocol);
+		this.priority = getPriority(protocol, schedule_type);
 		this.start_time = start_time;
 	}
 
 	/* Methods */
-	public static int getPriority(int protocol) {
+	public static int getPriority(int protocol, int schedule_type) {		
+		if(schedule_type == Schedule.FIFO){
+			return 1;
+		}
 		try {
 			int i;
 			for (i = 1; i < 3; i++) {
