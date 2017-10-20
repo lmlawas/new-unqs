@@ -124,7 +124,7 @@ public class UNQS {
 				}
 
 				// process queue
-				Schedule.process(priority_queues, config.getSchedule());
+				Schedule.process(priority_queues, config.getSchedule(), config.getBandwidth());
 
 				t++;
 			}

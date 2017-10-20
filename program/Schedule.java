@@ -9,7 +9,7 @@ public class Schedule {
 	final public static int WFQ = 2;
 
 
-	public static int process(LinkedList<Queue> priority_queues, int schedule_type) {		
+	public static int process(LinkedList<Queue> priority_queues, int schedule_type, double bandwidth) {
 
 		// if (schedule_type == FIFO) {
 		// 	firstInFirstOut();
