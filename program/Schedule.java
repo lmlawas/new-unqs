@@ -11,37 +11,38 @@ public class Schedule {
 
 	public static int process(LinkedList<Queue> priority_queues, int schedule_type, int bandwidth) {
 
-		// if (schedule_type == FIFO) {
-		// 	firstInFirstOut();
-		// } else if (schedule_type == PQ) {
-		// 	priorityQueue();
+		if (schedule_type == FIFO) {
+			firstInFirstOut(priority_queues.getFirst(), bandwidth);
+		} else if (schedule_type == PQ) {
+			priorityQueue(priority_queues, bandwidth);
 		// } else if (schedule_type == WFQ) {
 		// 	weightedFairQueue();
-		// } else {
-		// 	return -1;
-		// }
+		} else {
+			return -1;
+		}
 		return 1;
 	}
 
 	public static void firstInFirstOut(Queue q, int bandwidth) {
-		// test
-		// one queue
-		// bandwidth
 
-		int current_buffer = 0;		
+		int current_buffer = 0;
 
-		while(current_buffer < bandwidth){
-			Packet p = new Packet();
-
-			if(q.peek() != null){
-				p = q.removeFirst();
-				current_buffer = current_buffer + p.size;
+		for (Packet p : q) {
+			if (current_buffer + p.size < bandwidth) {
+				current_buffer += p.size;				
+			} else {
+				q.addFirst(p);
+				break;
 			}
 		}
 	}
 
-	public static void priorityQueue() {
-
+	public static void priorityQueue(LinkedList<Queue> priority_queues, int bandwidth) {
+		for(Queue q: priority_queues){
+			if(!q.isEmpty()){
+				firstInFirstOut(q, bandwidth);
+			}
+		}
 	}
 
 	public static void weightedFairQueue() {
