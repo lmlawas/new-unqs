@@ -18,11 +18,10 @@ public class Configuration {
 	private boolean debug,
 	        with_password;
 
-	private int interface_name,
+	private int bandwidth,
+	        interface_name,
 	        schedule_type,
 	        timeout;
-
-	private double bandwidth;
 
 	/* Getters */
 
@@ -65,7 +64,7 @@ public class Configuration {
 		return schedule_type;
 	}
 
-	double getBandwidth() {
+	int getBandwidth() {
 		return bandwidth;
 	}
 
@@ -136,7 +135,7 @@ public class Configuration {
 		this.schedule_type = schedule_type;
 	}
 
-	void setBandwidth(double bandwidth) {
+	void setBandwidth(int bandwidth) {
 		this.bandwidth = bandwidth;
 	}
 
@@ -264,7 +263,7 @@ public class Configuration {
 		match = Pattern.matches("^--bandwidth=[0-9]+?", input);
 		if (match) {
 			String[] parts = input.split("=");
-			setBandwidth( Double.parseDouble(parts[1]) );
+			setBandwidth( Integer.parseInt(parts[1]) );
 			return 1;
 		}
 
@@ -287,7 +286,7 @@ public class Configuration {
 			debug = true;
 			return 1;
 		}
-		
+
 		return -1;
 	}
 
@@ -299,8 +298,8 @@ public class Configuration {
 			int line_no = 1, update = 0;
 
 			while ((line = br.readLine()) != null) {
-				update = updateConfig(line);				
-				if (update == -1){
+				update = updateConfig(line);
+				if (update == -1) {
 					System.out.println("Error in .conf file line " + line_no);
 					return -1;
 				}
@@ -337,7 +336,6 @@ public class Configuration {
 		System.out.println("\tdbName = " + dbName);
 		System.out.println("\tdatestamp = " + datestamp);
 		System.out.println("\tinterface_name = " + interface_name);
-
 
 		// queue configuration
 		System.out.println("\n\t[ queue ]");
