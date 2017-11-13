@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 static const time_t default_time = 1493373910;
-static const char default_format[] = "%T";//%H:%M:%S
+static const char default_format[] = "%D %T";//%H:%M:%S
 
 int
 main(int argc, char *argv[])
